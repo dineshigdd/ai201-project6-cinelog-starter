@@ -22,9 +22,14 @@
 Making the default visibility private may contradict the primary goal of this application, as CineLog is designed as a community film-tracking app. This approach could potentially diminish the sense of community among users, as it discourages the sharing of interests. Consequently, this may negatively impact social interaction within the platform.
 
 ## Comment 5 — Sort order
-**My position:**
+**My position:** I believe the default sort order should be `date-added`, as users typically prefer to see the most recently added films at the top of their list. However, I recommend providing a control that allows users to toggle between alphabetical and date-added sorting.
 **Reasoning:**
+For users who choose to share their watchlists, the primary goal is often to engage with friends and the broader community by showcasing their current interests and upcoming film plans. By defaulting to date-added, we ensure that the most relevant, current items are displayed prominently. Supporting this social interaction not only strengthens our community but also provides valuable data for future features, such as a personalized recommendation engine based on user preferences. By prioritizing chronological order as the default, we create a predictable activity stream that facilitates social discovery and future content-recommendation features.
+
+Conversely, for users who prioritize privacy, providing the option to keep their watchlists private is essential. In these cases, offering an alphabetical sort option provides a cleaner, more organized way for them to manage their personal collections.
+
 **Engagement with reviewer's point:**
+I agree with the reviewer's observation that most users prefer to see their most recently added films first. This is the most intuitive way to sort a watchlist and aligns perfectly with the app’s goal of building a community of movie lovers. Sorting alphabetically by default could diminish the user experience, as it would force users to scroll through their entire list to find the films they added most recently. However, as noted, implementing a manual sort control will provide the necessary flexibility for users who prefer an alphabetical structure for their personal collections.
 
 ## Comment 6 — Rebase
 **What conflicted:**
