@@ -9,11 +9,11 @@
 
 ## Comment 2 — Deduplication
 **What I did:** I implemented deduplication logic in the `add_to_watchlist()` function within `services/watchlist_service.py`. This ensures that a user cannot add the same film to their watchlist more than once. If a user attempts to add an existing film, the function now raises an `AlreadyInWatchlistError` exception.
-**How I verified:** I followed the pattern established in `add_to_collection()`, which queries the database for an existing entry and raises an `AlreadyInWatchlistError` (or equivalent exception) if a duplicate is found. I verified this by running my test case(implemented in `##Comment 3`) to confirm that adding a duplicate film now correctly triggers the expected error rather than creating a new database record.
+**How I verified:** I followed the pattern established in `add_to_collection()`, which queries the database for an existing entry and raises an `AlreadyInWatchlistError` if a duplicate is found. I verified this by running my test case to confirm that adding a duplicate film now correctly triggers the expected error rather than creating a new database record.
 
 ## Comment 3 — Missing test
 **What I did:**
-**How I verified:**
+**How I verified:** 
 
 ## Comment 4 — Default visibility
 **My position:**
