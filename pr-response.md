@@ -12,8 +12,8 @@
 **How I verified:** I followed the pattern established in `add_to_collection()`, which queries the database for an existing entry and raises an `AlreadyInWatchlistError` if a duplicate is found. I verified this by running my test case to confirm that adding a duplicate film now correctly triggers the expected error rather than creating a new database record.
 
 ## Comment 3 — Missing test
-**What I did:**
-**How I verified:** 
+**What I did:** I implemented the `test_add_to_watchlist_nonexistent_film_raises()` test case in `tests/test_watchlist.py`. This verifies that the `add_to_watchlist()` function correctly raises a `FilmNotFoundError` exception when an attempt is made to add a film that does not exist in the database. This test is the functional equivalent of the `test_add_to_collection_nonexistent_film_raises()` test found in `test_collection.py`.
+**How I verified:** I followed the same fixture and assertion pattern used in `test_add_to_collection_nonexistent_film_raises()` to ensure consistency across the service layer. After implementing the test, I executed `pytest tests/test_watchlist.py -v`, which passed successfully. Finally, I ran the full test suite using `pytest tests/ -v` to confirm that all tests pass and no regressions were introduced.
 
 ## Comment 4 — Default visibility
 **My position:**
