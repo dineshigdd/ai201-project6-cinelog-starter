@@ -32,9 +32,18 @@ Conversely, for users who prioritize privacy, providing the option to keep their
 I agree with the reviewer's observation that most users prefer to see their most recently added films first. This is the most intuitive way to sort a watchlist and aligns perfectly with the app’s goal of building a community of movie lovers. Sorting alphabetically by default could diminish the user experience, as it would force users to scroll through their entire list to find the films they added most recently. However, as noted, implementing a manual sort control will provide the necessary flexibility for users who prefer an alphabetical structure for their personal collections.
 
 ## Comment 6 — Rebase
-**What conflicted:**
-**How I resolved it:**
-**How I verified no conflict remains:**
+***What conflicted:***
+I encountered a merge conflict in `.gitignore` due to my local inclusion of `.pytest_cache`, which conflicted with the updated `main` branch. 
+While the rebase process itself did not flag conflicts within `services/watchlist_service.py`, I identified a subsequent issue where the `WatchlistEntry` model was missing or altered in `models.py`.
+***How I resolved it:***
+1.  **Git Conflict:** I resolved the merge conflict in `.gitignore` by merging my local configuration with the required project-standard exclusions. After staging the changes with `git add .gitignore`, I completed the rebase using `git rebase --continue`.
+2.  **Schema & Implementation Updates:** 
+    *   **Models:** Updated `models.py` to define the `WatchlistEntry` model, ensuring the `film_id` property uses `db.String(36)` to support UUIDs: `film_id = db.Column(db.String(36), db.ForeignKey("film.id"), nullable=False)`.
+    *   **Service Layer:** Updated the docstring in the `add_to_watchlist()` function within `services/watchlist_service.py` from `film_id (int)` to `film_id (str)` to correctly reflect the UUID requirement. No changes to the underlying logic were required as the implementation was already compatible.
+    *   **API Documentation:** Updated the route documentation in `routes/watchlist/watchlist.py` for the POST endpoint to clarify that the request body now expects a UUID string (`{ "film_id": "<uuid>" }`) rather than an integer.
+
+***How I verified no conflict remains:***
+I verified the stability of my changes by running the full test suite. Specifically, I ran `pytest tests/test_watchlist.py -v` to confirm that `add_to_watchlist()` handles the new UUID requirements correctly and satisfies all test cases. Additionally, I ran `pytest tests/test_collection.py -v` to ensure that my changes did not introduce any regressions in the existing collection service functionality. All tests passed successfully.
 
 ## PR Description
 <!-- Written at the end — feature overview, design decisions, manual testing steps -->
