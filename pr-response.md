@@ -2,6 +2,19 @@
 
 ## AI Usage
 <!-- Fill in at the end — how you used AI tools during this project -->
+I primarily utilized AI tools to assist with three key areas of the development and documentation process:
+
+**1. Verifying Commit Formats**
+I provided my `git log --oneline` output to the AI and prompted it to refine the entries based on the [Conventional Commits specification](https://www.conventionalcommits.org/). Before applying any changes, I carefully reviewed the AI-generated suggestions to ensure they accurately reflected my work.
+
+**2. Researching Responses for Comments 4 and 5**
+I required additional background knowledge to provide in-depth responses for comments 4 and 5. While I had a basic understanding of the requirements, I prompted the AI to help me identify industry best practices for an application like `CineLog`. 
+
+For comment 4, regarding default visibility, I initially considered keeping it public. However, the AI provided insights into security and user privacy, suggesting that private-by-default is standard practice. After reviewing this information, I initially shifted to a private-only default. Ultimately, because `CineLog` is a community-focused application, I synthesized these insights into a hybrid approach, which I believe is the ideal solution.
+
+**3. Refining Documentation**
+AI was also instrumental in improving the quality of my documentation. I used it to refine my phrasing, enhance technical vocabulary, and correct grammar and spelling throughout this document to ensure my explanations were clear and professional.
+
 
 ## Comment 1 — Rename
 **What I did:** I renamed the `save_to_watchlist()` function to `add_to_watchlist()` in `services/watchlist_service.py`.
@@ -45,5 +58,48 @@ While the rebase process itself did not flag conflicts within `services/watchlis
 ***How I verified no conflict remains:***
 I verified the stability of my changes by running the full test suite. Specifically, I ran `pytest tests/test_watchlist.py -v` to confirm that `add_to_watchlist()` handles the new UUID requirements correctly and satisfies all test cases. Additionally, I ran `pytest tests/test_collection.py -v` to ensure that my changes did not introduce any regressions in the existing collection service functionality. All tests passed successfully.
 
+## Git Log
+![alt text](git-log.png)
+
 ## PR Description
 <!-- Written at the end — feature overview, design decisions, manual testing steps -->
+### Watchlist feature functionality:**
+
+* The watchlist feature allows users to save a film to watch later.
+* Films are added to the list as `WatchlistEntry` objects.
+
+**Design decisions (default visibility and sort order):**
+
+* **Default Visibility:** I believe in a balanced approach: keeping the default visibility private (i.e., `public = db.Column(db.Boolean, default=False)`) and allowing the user to choose whether to make it public.
+* **Sort Order:** I agree with the reviewers' position to sort the list by the `date_added` property by default. Additionally, I recommend adding a control that lets users toggle between alphabetical and `date_added` sorting.
+
+### Manual Testing Instructions
+
+To ensure the watchlist feature is functioning correctly, perform the following tests:
+
+1. **Add a Film to Watchlist:**
+* Navigate to a film’s detail page.
+* Click the "Add to Watchlist" button.
+* Verify that the film appears in your Watchlist page.
+* Check the database to confirm a new `WatchlistEntry` object was created for that user and film.
+
+
+2. **Verify Default Visibility:**
+* Add a film to your watchlist.
+* Check the entry in the database. Ensure the `public` column is set to `False` by default.
+
+
+3. **Test Sort Order:**
+* Add multiple films to your watchlist at different times.
+* Load the Watchlist page and verify the list is sorted by `date_added` (newest first) by default.
+* Use the sorting toggle (if implemented) to switch to alphabetical order. Ensure the films are reordered correctly by title.
+
+
+4. **Test Toggle Controls (if applicable):**
+* If you have implemented the requested UI controls, click the toggle to switch between sorting methods.
+* Verify that the UI updates immediately without needing a full page refresh.
+
+
+5. **Edge Case Testing:**
+* Attempt to add the same film to the watchlist twice (ensure it handles duplicates appropriately).
+* Ensure that the "Add to Watchlist" button is disabled or hidden for films already in the user's list.
