@@ -58,7 +58,14 @@ While the rebase process itself did not flag conflicts within `services/watchlis
 ***How I verified no conflict remains:***
 I verified the stability of my changes by running the full test suite. Specifically, I ran `pytest tests/test_watchlist.py -v` to confirm that `add_to_watchlist()` handles the new UUID requirements correctly and satisfies all test cases. Additionally, I ran `pytest tests/test_collection.py -v` to ensure that my changes did not introduce any regressions in the existing collection service functionality. All tests passed successfully.
 
-## Git Log
+### Stretch Features
+**What it does:** I implemented the `remove_from_watchlist()` function, which removes a specified film from a user's watchlist. If the `film_id` does not exist on that user's watchlist, the function gracefully handles it by raising a `NotInWatchlistError` exception.
+
+**Following patterns:** I followed the existing pattern found in `remove_from_collection()` within `services/collection_service.py`, using the same database session handling, consistent parameter ordering, and similar error-checking logic.
+
+**Verification:** I added a test in `tests/test_watchlist.py` to confirm that removing a valid film updates the database and that attempting to remove a non-existent film does not cause an unexpected crash.
+
+## Commit History
 ![alt text](git-log.png)
 
 ## PR Description
