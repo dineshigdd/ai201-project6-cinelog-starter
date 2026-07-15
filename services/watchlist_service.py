@@ -16,6 +16,10 @@ class NotInWatchlistError(Exception):
     """Raised when trying to remove a film that isn't in the watchlist."""
     pass
 
+class EmptyWatchlistError(Exception):
+    """Raised when trying to retrieve a watchlist that is empty."""
+    pass
+
 def add_to_watchlist(user_id, film_id):
     """
     Add a film to a user's watchlist.
@@ -59,6 +63,7 @@ def remove_from_watchlist(user_id, film_id):
     Returns:
         bool: True if the entry was deleted, False if it did not exist.
     """
+  
     entry = WatchlistEntry.query.filter_by(
         user_id=user_id,
         film_id=film_id).first()
@@ -67,9 +72,11 @@ def remove_from_watchlist(user_id, film_id):
             f"Film '{film_id}' is not in this user's watchlist"
         )
 
+    
     db.session.delete(entry)
     db.session.commit()
     return True
+
 
 def get_watchlist(user_id):
     """
@@ -88,6 +95,9 @@ def get_watchlist(user_id):
         .order_by(Film.title.asc())
         .all()
     )
+
+    if not entries:
+        raise EmptyWatchlistError(f"User '{user_id}' has no films in their watchlist")
 
     result = []
     for entry in entries:
