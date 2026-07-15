@@ -4,6 +4,7 @@ from models import User, Film, WatchlistEntry
 from services.collection_service import FilmNotFoundError
 from services.watchlist_service import (add_to_watchlist , AlreadyInWatchlistError)
 from services.watchlist_service import remove_from_watchlist, NotInWatchlistError
+from services.watchlist_service import get_watchlist, EmptyWatchlistError
 
 @pytest.fixture
 def app():
@@ -90,3 +91,13 @@ def test_remove_from_watchlist_not_in_watchlist_raises(app, sample_user, sample_
             user_id=sample_user, film_id=fake_film_id
         ).count()
         assert count == 0
+
+
+# ── Empty Watchlist Retrieval  ────────────────────────────────────────────────────────────
+def test_get_watchlist_empty_raises(app, sample_user):
+    """
+    Retrieving a watchlist for a user with no entries should raise EmptyWatchlistError.
+    """ 
+    with app.app_context():
+        with pytest.raises(EmptyWatchlistError):
+            get_watchlist(user_id=sample_user)
