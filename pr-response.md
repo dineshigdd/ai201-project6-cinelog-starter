@@ -74,6 +74,8 @@ I verified the stability of my changes by running the full test suite. Specifica
 
 **Verification:** I added the test case `test_get_watchlist_empty_raises()` in `tests/test_watchlist.py` to confirm that calling `get_watchlist()` for a user with no films correctly raises this exception, ensuring the system handles empty lists explicitly rather than returning a vague `None` or an empty list without warning.
 
+**Rationale for this edge case:** I chose to test the empty watchlist scenario because it represents a common "boundary" state that often causes bugs in applications—specifically, code that assumes a list exists and tries to iterate over it will crash if the list is missing or empty. By explicitly raising and testing for `EmptyWatchlistError`, I ensure the API remains predictable and that the frontend or calling services receive a clear, actionable error instead of an unexpected crash.
+
 ## Commit History
 ![alt text](git-log.png)
 
