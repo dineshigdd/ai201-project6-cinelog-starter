@@ -58,15 +58,15 @@ While the rebase process itself did not flag conflicts within `services/watchlis
 ***How I verified no conflict remains:***
 I verified the stability of my changes by running the full test suite. Specifically, I ran `pytest tests/test_watchlist.py -v` to confirm that `add_to_watchlist()` handles the new UUID requirements correctly and satisfies all test cases. Additionally, I ran `pytest tests/test_collection.py -v` to ensure that my changes did not introduce any regressions in the existing collection service functionality. All tests passed successfully.
 
-### Stretch Features
-
+## Stretch Features
+### Remove an entry from Watchlist
 **What it does:** I implemented the `remove_from_watchlist()` function, which removes a specified film from a user's watchlist. If the `film_id` does not exist on that user's watchlist, the function gracefully handles it by raising a `NotInWatchlistError` exception.
 
 **Following patterns:** I followed the existing pattern found in `remove_from_collection()` within `services/collection_service.py`, using the same database session handling, consistent parameter ordering, and similar error-checking logic.
 
 **Verification:** I added a test in `tests/test_watchlist.py` to confirm that removing a valid film updates the database and that attempting to remove a non-existent film does not cause an unexpected crash.
 
----
+### Test for Edge case: removing an entry from an empty watchlist
 
 **What it does:** I implemented a custom `EmptyWatchlistError` exception, which is raised by the `get_watchlist(user_id)` function whenever a retrieval request is made for a user whose watchlist contains no entries. 
 
@@ -75,6 +75,22 @@ I verified the stability of my changes by running the full test suite. Specifica
 **Verification:** I added the test case `test_get_watchlist_empty_raises()` in `tests/test_watchlist.py` to confirm that calling `get_watchlist()` for a user with no films correctly raises this exception, ensuring the system handles empty lists explicitly rather than returning a vague `None` or an empty list without warning.
 
 **Rationale for this edge case:** I chose to test the empty watchlist scenario because it represents a common "boundary" state that often causes bugs in applications—specifically, code that assumes a list exists and tries to iterate over it will crash if the list is missing or empty. By explicitly raising and testing for `EmptyWatchlistError`, I ensure the API remains predictable and that the frontend or calling services receive a clear, actionable error instead of an unexpected crash.
+
+### Visibility Toggle
+
+**How it works:**
+The `add_to_watchlist()` endpoint now accepts an optional JSON parameter named **`public`**. 
+
+*   **Functionality:** This boolean value determines whether the film entry is visible to other users (public) or hidden (private) within the user's watchlist. 
+*   **The Default:** If a caller does not provide the `public` parameter, the system defaults to **`True`**, ensuring that existing API integrations continue to create public watchlist entries without requiring any code changes.
+*   **How a caller uses it:** 
+    *   **To create a public entry (or use default):** 
+        `POST /watchlist/<user_id>/add` with body `{"film_id": "<uuid>"}` 
+        *(The system automatically sets `public: true`)*.
+    *   **To create a private entry:** 
+        `POST /watchlist/<user_id>/add` with body `{"film_id": "<uuid>", "public": false}`.
+
+**Verification:** I verified this by manually testing both scenarios via `curl` requests, checking the database after each call to ensure the `public` column in the `WatchlistEntry` table correctly reflected the value sent in the request body.
 
 ## Commit History
 ![alt text](git-log.png)
