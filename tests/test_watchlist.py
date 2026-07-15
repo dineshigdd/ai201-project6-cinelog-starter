@@ -3,7 +3,7 @@ from app import create_app, db
 from models import User, Film, WatchlistEntry
 from services.collection_service import FilmNotFoundError
 from services.watchlist_service import (add_to_watchlist , AlreadyInWatchlistError)
-
+from services.watchlist_service import remove_from_watchlist, NotInWatchlistError
 
 @pytest.fixture
 def app():
@@ -70,3 +70,23 @@ def test_add_to_watchlist_duplicate_raises(app, sample_user, sample_film):
             user_id=sample_user, film_id=sample_film
         ).count()
         assert count == 1
+
+
+# ── Remove from watchlist ────────────────────────────────────────────────────────────
+
+def test_remove_from_watchlist_not_in_watchlist_raises(app, sample_user, sample_film):
+    """
+    Removing a film that isn't in the watchlist should raise NotInWatchlistError.
+    """
+    with app.app_context():
+        fake_film_id = "00000000-0000-0000-0000-000000000000"
+        
+        # Correctly assert that the function raises the error
+        with pytest.raises(NotInWatchlistError):
+            remove_from_watchlist(user_id=sample_user, film_id=fake_film_id)
+
+        # Confirm the film was never in the watchlist to begin with
+        count = WatchlistEntry.query.filter_by(
+            user_id=sample_user, film_id=fake_film_id
+        ).count()
+        assert count == 0
