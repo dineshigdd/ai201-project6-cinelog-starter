@@ -20,7 +20,7 @@ class EmptyWatchlistError(Exception):
     """Raised when trying to retrieve a watchlist that is empty."""
     pass
 
-def add_to_watchlist(user_id, film_id):
+def add_to_watchlist(user_id, film_id , public=True):
     """
     Add a film to a user's watchlist.
 
@@ -41,13 +41,15 @@ def add_to_watchlist(user_id, film_id):
 
     existing = WatchlistEntry.query.filter_by(
         user_id=user_id,
-        film_id=film_id).first()
+        film_id=film_id        
+        ).first()
+    
     if existing:
         raise AlreadyInWatchlistError(
             f"Film '{film_id}' is already in this user's watchlist"
         )
 
-    entry = WatchlistEntry(user_id=user_id, film_id=film_id)
+    entry = WatchlistEntry(user_id=user_id, film_id=film_id, public=public)
     db.session.add(entry)
     db.session.commit()
     return entry
