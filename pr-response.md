@@ -59,11 +59,20 @@ While the rebase process itself did not flag conflicts within `services/watchlis
 I verified the stability of my changes by running the full test suite. Specifically, I ran `pytest tests/test_watchlist.py -v` to confirm that `add_to_watchlist()` handles the new UUID requirements correctly and satisfies all test cases. Additionally, I ran `pytest tests/test_collection.py -v` to ensure that my changes did not introduce any regressions in the existing collection service functionality. All tests passed successfully.
 
 ### Stretch Features
+
 **What it does:** I implemented the `remove_from_watchlist()` function, which removes a specified film from a user's watchlist. If the `film_id` does not exist on that user's watchlist, the function gracefully handles it by raising a `NotInWatchlistError` exception.
 
 **Following patterns:** I followed the existing pattern found in `remove_from_collection()` within `services/collection_service.py`, using the same database session handling, consistent parameter ordering, and similar error-checking logic.
 
 **Verification:** I added a test in `tests/test_watchlist.py` to confirm that removing a valid film updates the database and that attempting to remove a non-existent film does not cause an unexpected crash.
+
+---
+
+**What it does:** I implemented a custom `EmptyWatchlistError` exception, which is raised by the `get_watchlist(user_id)` function whenever a retrieval request is made for a user whose watchlist contains no entries. 
+
+**Following patterns:** This adheres to the project's pattern of using domain-specific exceptions to communicate state-based errors, similar to how I handled the `NotInWatchlistError` for the removal function. It ensures that the calling code can differentiate between a system error and an empty state.
+
+**Verification:** I added the test case `test_get_watchlist_empty_raises()` in `tests/test_watchlist.py` to confirm that calling `get_watchlist()` for a user with no films correctly raises this exception, ensuring the system handles empty lists explicitly rather than returning a vague `None` or an empty list without warning.
 
 ## Commit History
 ![alt text](git-log.png)
